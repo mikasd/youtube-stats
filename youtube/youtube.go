@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"io/ioutil"
 )
 
 type Response struct {
@@ -33,8 +34,8 @@ func GetSubscribers() (Item, error) {
 	}
 
 	q := req.URL.Query()
-	q.Add("key", os.Lookupenv("YOUTUBE_KEY"))
-	q.Add("id", os.Lookupenv("CHANNEL_ID"))
+	q.Add("key", os.Getenv("YOUTUBE_KEY"))
+	q.Add("id", os.Getenv("CHANNEL_ID"))
 	q.Add("part", "statistics")
 	req.URL.RawQuery = q.Encode()
 
@@ -48,7 +49,7 @@ func GetSubscribers() (Item, error) {
 
 	fmt.Println("Response status: ", resp.Status)
 
-	body, err := ioutil.ReadAll(resp.body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err)
 		return Item{}, err
@@ -61,6 +62,4 @@ func GetSubscribers() (Item, error) {
 	}
 
 	return response.Items[0], nil
-
-
 }
